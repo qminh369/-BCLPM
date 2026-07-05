@@ -1,0 +1,28 @@
+services:
+  backend:
+    build: ./backend
+    container_name: chungcu-backend
+    environment:
+      - DATABASE_URL=sqlite:////app/data/apartment.db
+      - SECRET_KEY=doi-secret-key-nay-trong-production
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+    volumes:
+      # Lưu file SQLite ra volume để dữ liệu không mất khi rebuild container
+      - backend_data:/app/data
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"   # Mở cổng để test API trực tiếp (có thể bỏ nếu không cần)
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: chungcu-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"     # Truy cập ứng dụng tại http://localhost:3000
+    restart: unless-stopped
+
+volumes:
+  backend_data:
