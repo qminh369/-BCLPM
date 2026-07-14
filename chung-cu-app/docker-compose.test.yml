@@ -1,0 +1,16 @@
+# Compose phụ để chạy kiểm thử E2E bằng Docker.
+# Dùng cùng với file chính:
+#   docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit e2e
+services:
+  e2e:
+    build: ./e2e
+    container_name: chungcu-e2e
+    depends_on:
+      - frontend
+      - backend
+    environment:
+      - BASE_URL=http://frontend:80
+    volumes:
+      # Xuất báo cáo test ra máy host
+      - ./e2e/playwright-report:/e2e/playwright-report
+      - ./e2e/test-results:/e2e/test-results
